@@ -32,7 +32,6 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/users', user.list);
 app.get('/api/on/:house/:device', api.on);
 app.get('/api/off/:house/:device', api.off);
 
