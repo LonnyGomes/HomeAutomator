@@ -1,5 +1,5 @@
 /*global require, exports */
-var mochad = require("../mochad");
+var mochad = require("../lib/mochad");
 
 function send(req, res, state) {
     "use strict";
