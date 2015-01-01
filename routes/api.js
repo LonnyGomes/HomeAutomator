@@ -9,7 +9,15 @@ function send(req, res, state) {
         sendFunc = (state === "on" ? mochad.sendOn : mochad.sendOff);
 
     sendFunc(houseCode, deviceCode, function (err, data) {
-        res.send("{status: success }");
+        var obj = {status: 'success'};
+
+        if (err) {
+            obj.status = 'fail';
+            obj.message = err;
+            res.send(obj);
+        } else {
+            res.send(obj);
+        }
     });
     //res.send("respond:" + req.params.house);
 }
