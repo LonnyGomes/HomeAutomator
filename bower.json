@@ -1,0 +1,30 @@
+{
+  "name": "HomeAutomator",
+  "version": "0.0.0",
+  "homepage": "https://github.com/LonnyGomes/HomeAutomator",
+  "authors": [
+    "Lonny Gomes <code@lonnygomes.com>"
+  ],
+  "main": "app.js",
+  "moduleType": [
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "automation",
+    "x10"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.1",
+    "jquery": "~2.1.3"
+  }
+}
