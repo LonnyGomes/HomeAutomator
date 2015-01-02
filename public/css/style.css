@@ -9,6 +9,22 @@ a {
 }
 .buttons-container {
     display: inline-block;
+    margin: 5px 2px;
+}
+
+.buttons-container button {
+    width: 70px;
+}
+
+.device {
+  padding: 4px 8px;
+  margin-bottom: 10px;
+  background-color: hsla(0, 0%, 92%, 0.72);
+  border-radius: 3px;
+}
+
+#devices-container ul {
+    list-style: none;
 }
 
 

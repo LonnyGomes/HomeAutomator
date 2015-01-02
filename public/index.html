@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" ng-app="App">
 
 <head>
   <meta charset="utf-8">
@@ -46,7 +46,18 @@
 
   <div class="container">
       <h3 class="text-muted">Devices</h3>
-      <div id="devices-container">
+      <div id="devices-container" ng-controller="DevicesController">
+        <ul>
+          <li ng-repeat="device in devices">
+            <div class="device">
+              <span>{{ device.device_name }}</span><br/>
+              <div class="buttons-container">
+                <button data-button-type="on" class="button-on btn btn-success" ng-click="turnOnDevice(device)">ON</button>
+                <button data-button-type="off" class="button-off btn btn-danger" ng-click="turnOffDevice(device)">OFF</button>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
   </div>
 
@@ -56,6 +67,7 @@
   </div>
 
   <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="bower_components/angular/angular.min.js"></script>
   <script src="bower_components/bootstrap/js/affix.js"></script>
   <script src="bower_components/bootstrap/js/alert.js"></script>
   <script src="bower_components/bootstrap/js/dropdown.js"></script>
