@@ -6,3 +6,15 @@ body {
 a {
   color: #00B7FF;
 }
+.buttons-container {
+    display: inline-block;
+}
+
+
+.on-button {
+    background-color: #0f0;
+}
+
+.off-button {
+    background-color: #f00;
+}
