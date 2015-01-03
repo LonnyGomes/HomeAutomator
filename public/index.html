@@ -37,30 +37,33 @@
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-          <li><a href="#">Devices</a></li>
-          <li><a href="#scenes">Scenes</a></li>
-          <li><a href="#config">Config</a></li>
+          <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a>
+          </li>
+          <li><a href="#">Devices</a>
+          </li>
+          <li><a href="#scenes">Scenes</a>
+          </li>
+          <li><a href="#config">Config</a>
+          </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <div class="container">
-      <h3 class="text-muted">Devices</h3>
-      <div id="devices-container" ng-controller="DevicesController">
-        <ul>
-          <li ng-repeat="device in devices">
-            <div class="device">
-              <span>{{ device.device_name }}</span><br/>
-              <div class="buttons-container">
-                <button data-button-type="on" class="button-on btn btn-success" ng-click="turnOnDevice(device)">ON</button>
-                <button data-button-type="off" class="button-off btn btn-danger" ng-click="turnOffDevice(device)">OFF</button>
-              </div>
-            </div>
-          </li>
-        </ul>
+  <div class="container" ng-controller="DevicesController">
+    <h3 class="text-muted">Devices</h3>
+    <div class="row device" ng-repeat="device in devices">
+      <div class="col-sm-2">
+        <h4>{{ device.device_name }}</h4>
       </div>
+
+      <div class="col-sm-10">
+        <div class="buttons-container">
+          <button data-button-type="on" class="button-on btn btn-success" ng-click="turnOnDevice(device)">ON</button>
+          <button data-button-type="off" class="button-off btn btn-danger" ng-click="turnOffDevice(device)">OFF</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="container-fluid">
