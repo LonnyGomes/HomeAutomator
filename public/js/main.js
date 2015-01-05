@@ -1,4 +1,4 @@
-/*global angular */
+/*global angular, $ */
 (function () {
     'use strict';
     var app = angular.module("App", []);
@@ -38,13 +38,19 @@
             $http.get(url).
                 success(function (data, status, headers, config) {
                     if (data.status === "success") {
-                        alert(d.device_name + " was turned " + state);
+                        $('#status-modal .modal-header h4').text('Success');
+                        $('#status-modal-content').text(d.device_name + " was turned " + state);
+                        $('#status-modal').modal();
                     } else {
-                        alert("FAILED to turn " + d.device_name + " " + state);
+                        $('#status-modal .modal-header h4').text('Failed!');
+                        $('#status-modal-content').text("FAILED to turn " + d.device_name + " " + state);
+                        $('#status-modal').modal();
                     }
                 }).
                 error(function (data, status, headers, config) {
-                    alert("FAILED to update " + d.device_name);
+                    $('#status-modal .modal-header h4').text('Failed!');
+                    $('#status-modal-content').text("FAILED to update " + d.device_name);
+                    $('#status-modal').modal();
                 });
         }
 
