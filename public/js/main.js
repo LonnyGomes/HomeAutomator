@@ -1,7 +1,19 @@
 /*global angular, $ */
 (function () {
     'use strict';
-    var app = angular.module("App", []);
+    var app = angular.module("App", ['ngRoute']);
+
+    //routes
+    app.config([ '$routeProvider', function ($routeProvider) {
+        $routeProvider
+            .when('/', {
+                templateUrl: 'templates/devices.html',
+                controller: 'DevicesController'
+            })
+            .otherwise({
+                redirectTo: '/'
+            });
+    }]);
 
     // controllers
     app.controller("DevicesController", function ($scope, $http) {

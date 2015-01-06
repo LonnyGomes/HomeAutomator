@@ -66,20 +66,8 @@
     </div>
   </nav>
 
-  <div class="container" ng-controller="DevicesController">
-    <h3 class="text-muted">Devices</h3>
-    <div class="row device" ng-repeat="device in devices">
-      <div class="col-sm-2">
-        <h4>{{ device.device_name }}</h4>
-      </div>
-
-      <div class="col-sm-10">
-        <div class="buttons-container">
-          <button data-button-type="on" class="button-on btn btn-success" ng-click="turnOnDevice(device)">ON</button>
-          <button data-button-type="off" class="button-off btn btn-danger" ng-click="turnOffDevice(device)">OFF</button>
-        </div>
-      </div>
-    </div>
+  <div class="container">
+    <div ng-view></div>
   </div>
 
   <div class="container-fluid">
@@ -89,6 +77,7 @@
 
   <script src="bower_components/jquery/dist/jquery.min.js"></script>
   <script src="bower_components/angular/angular.min.js"></script>
+  <script src="bower_components/angular-route/angular-route.min.js"></script>
 <!--
   <script src="bower_components/bootstrap/js/affix.js"></script>
   <script src="bower_components/bootstrap/js/alert.js"></script>
