@@ -10,6 +10,12 @@
                 "home_id": "a",
                 "device_id": "3",
                 "device_type": "appliance",
+                "device_name": "Kitchen"
+            },
+            {
+                "home_id": "a",
+                "device_id": "4",
+                "device_type": "appliance",
                 "device_name": "Christmas Lights"
             },
             {
