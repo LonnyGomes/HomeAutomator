@@ -6,12 +6,17 @@
     //routes
     app.config([ '$routeProvider', function ($routeProvider) {
         $routeProvider
-            .when('/', {
-                templateUrl: 'templates/devices.html',
-                controller: 'DevicesController'
+            .when('/scenes', {
+                templateUrl: 'templates/scenes.html',
+                controller: 'ScenesController'
+            })
+            .when('/config', {
+                templateUrl: 'templates/config.html',
+                controller: 'ConfigController'
             })
             .otherwise({
-                redirectTo: '/'
+                templateUrl: 'templates/devices.html',
+                controller: 'DevicesController'
             });
     }]);
 
@@ -80,6 +85,14 @@
             updateDevice(d, "off");
         };
 
+
+    });
+
+    app.controller('ScenesController', function ($scope) {
+
+    });
+
+    app.controller('ConfigController', function ($scope) {
 
     });
 }());
