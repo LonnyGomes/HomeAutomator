@@ -4,18 +4,18 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
-}
 .buttons-container {
     display: inline-block;
+    margin: 5px 2px;
 }
 
-
-.on-button {
-    background-color: #0f0;
+.buttons-container button {
+    width: 70px;
 }
 
-.off-button {
-    background-color: #f00;
+.device {
+  padding: 4px 8px;
+  margin-bottom: 10px;
+  background-color: hsla(0, 0%, 92%, 0.72);
+  border-radius: 3px;
 }
