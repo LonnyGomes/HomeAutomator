@@ -20,6 +20,19 @@
             });
     }]);
 
+    // directives
+    app.directive('lgTab', [function () {
+        return {
+            restrict: 'A',
+            link: function link(scope, element, attrs) {
+                element.on('click', function () {
+                    element.parent().find('li').removeClass('active');
+                    element.addClass('active');
+                });
+            }
+        };
+    }]);
+
     // controllers
     app.controller("DevicesController", function ($scope, $http) {
         $scope.devices = [
