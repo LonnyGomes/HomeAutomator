@@ -21,13 +21,19 @@
     }]);
 
     // directives
-    app.directive('lgTab', [function () {
+    app.directive('lgTab', ['$location', function ($location) {
+        console.log($location);
         return {
             restrict: 'A',
             link: function link(scope, element, attrs) {
-                element.on('click', function () {
-                    element.parent().find('li').removeClass('active');
-                    element.addClass('active');
+                var linkName = element.find('a').attr('href').substring(1);
+                scope.$on('$routeChangeSuccess', function () {
+                    var curLink = $location.path().substring(1);
+                    if (linkName === curLink) {
+                        element.addClass('active');
+                    } else {
+                        element.removeClass('active');
+                    }
                 });
             }
         };
