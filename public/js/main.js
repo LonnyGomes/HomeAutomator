@@ -22,7 +22,7 @@
     }]);
 
     // services
-    deviceModule.factory('deviceFactory', [ function () {
+    deviceModule.factory('deviceFactory', [ '$http', '$q', function ($http, $q) {
         var devices = [
             {
                 "home_id": "a",
@@ -55,12 +55,30 @@
                 "device_name": "Office"
             }
 
-        ];
+        ], updateDevice = function (home_id, device_id, state) {
+            var defer = $q.defer(),
+                url = "/api/" + state + "/" + home_id + "/" + device_id;
+
+            $http.get(url).
+                success(function (data, status, headers, config) {
+                    if (data.status === "success") {
+                        defer.resolve(data);
+                    } else {
+                        defer.reject("FAILED to turn " + device_id + " " + state);
+                    }
+                }).
+                error(function (data, status, headers, config) {
+                    defer.reject("FAILED to receive a response forrespond " + device_id);
+                });
+
+            return defer.promise;
+        };
 
         return {
             getDevices: function () {
                 return devices;
-            }
+            },
+            updateDevice: updateDevice
         };
     }]);
 
@@ -87,20 +105,12 @@
         $scope.devices = deviceFactory.getDevices();
 
         function updateDevice(d, state) {
-            var url = "/api/" + state + "/" + d.home_id + "/" + d.device_id;
-            $http.get(url).
-                success(function (data, status, headers, config) {
-                    if (data.status === "success") {
-                        $('#status-modal .modal-header h4').text('Success');
-                        $('#status-modal-content').text(d.device_name + " was turned " + state);
-                        $('#status-modal').modal();
-                    } else {
-                        $('#status-modal .modal-header h4').text('Failed!');
-                        $('#status-modal-content').text("FAILED to turn " + d.device_name + " " + state);
-                        $('#status-modal').modal();
-                    }
-                }).
-                error(function (data, status, headers, config) {
+            deviceFactory.updateDevice(d.home_id, d.device_id, state).
+                then(function (data) {
+                    $('#status-modal .modal-header h4').text('Success');
+                    $('#status-modal-content').text(d.device_name + " was turned " + state);
+                    $('#status-modal').modal();
+                }, function (err) {
                     $('#status-modal .modal-header h4').text('Failed!');
                     $('#status-modal-content').text("FAILED to update " + d.device_name);
                     $('#status-modal').modal();
@@ -115,12 +125,11 @@
             updateDevice(d, "off");
         };
 
-
     });
 
-    app.controller('ScenesController', function ($scope) {
+    app.controller('ScenesController', [ '$scope', 'deviceFactory', function ($scope, deviceFactory) {
 
-    });
+    }]);
 
     app.controller('ConfigController', function ($scope) {
 
