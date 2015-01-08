@@ -1,7 +1,8 @@
 /*global angular, $ */
 (function () {
     'use strict';
-    var app = angular.module("App", ['ngRoute']);
+    var deviceModule = angular.module('DeviceModule', []),
+        app = angular.module('App', ['ngRoute', 'DeviceModule']);
 
     //routes
     app.config([ '$routeProvider', function ($routeProvider) {
@@ -20,28 +21,9 @@
             });
     }]);
 
-    // directives
-    app.directive('lgTab', ['$location', function ($location) {
-        console.log($location);
-        return {
-            restrict: 'A',
-            link: function link(scope, element, attrs) {
-                var linkName = element.find('a').attr('href').substring(1);
-                scope.$on('$routeChangeSuccess', function () {
-                    var curLink = $location.path().substring(1);
-                    if (linkName === curLink) {
-                        element.addClass('active');
-                    } else {
-                        element.removeClass('active');
-                    }
-                });
-            }
-        };
-    }]);
-
-    // controllers
-    app.controller("DevicesController", function ($scope, $http) {
-        $scope.devices = [
+    // services
+    deviceModule.factory('deviceFactory', [ function () {
+        var devices = [
             {
                 "home_id": "a",
                 "device_id": "3",
@@ -74,6 +56,35 @@
             }
 
         ];
+
+        return {
+            getDevices: function () {
+                return devices;
+            }
+        };
+    }]);
+
+    // directives
+    app.directive('lgTab', ['$location', function ($location) {
+        return {
+            restrict: 'A',
+            link: function link(scope, element, attrs) {
+                var linkName = element.find('a').attr('href').substring(1);
+                scope.$on('$routeChangeSuccess', function () {
+                    var curLink = $location.path().substring(1);
+                    if (linkName === curLink) {
+                        element.addClass('active');
+                    } else {
+                        element.removeClass('active');
+                    }
+                });
+            }
+        };
+    }]);
+
+    // controllers
+    app.controller("DevicesController", function ($scope, $http, deviceFactory) {
+        $scope.devices = deviceFactory.getDevices();
 
         function updateDevice(d, state) {
             var url = "/api/" + state + "/" + d.home_id + "/" + d.device_id;
