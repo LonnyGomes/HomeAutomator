@@ -137,23 +137,32 @@
         };
     });
 
-    app.controller('ScenesController', [ '$scope', 'deviceFactory', 'messageFactory', function ($scope, deviceFactory, messageFactory) {
+    app.controller('ScenesController', [ '$scope', '$q', 'deviceFactory', 'messageFactory', function ($scope, $q, deviceFactory, messageFactory) {
         $scope.allOffClicked = function () {
-            var p = null;
-            angular.forEach(deviceFactory.getDevices(), function (d) {
-                if (p === null) {
-                    p = deviceFactory.updateDevice(d.home_id, d.device_id, "off");
-                } else {
-                    p = p.then(deviceFactory.updateDevice(d.home_id, d.device_id, "off"));
-                }
-            });
+            var p,
+                firstDevice,
+                devices = deviceFactory.getDevices();
 
-            if (p) {
-                p.then(function (data) {
-                    messageFactory.alert('Success', 'All devices were shut off');
-                }, function (err) {
-                    messageFactory.alert('Failure', 'Failed to turn off all devices: ' + err);
-                });
+            //if any devices were returned lets get the first one
+            //and loop through each other device sequentially
+            if (devices.length > 0) {
+                firstDevice = devices.shift();
+
+                //since updateDevice returns a promise, lets use reduce to
+                //build a sequential chain of updateDevice calls
+                p = devices.reduce(function (promise, d) {
+                    return promise.then(function () {
+                        return deviceFactory.updateDevice(d.home_id, d.device_id, "off");
+                    });
+                }, deviceFactory.updateDevice(firstDevice.home_id, firstDevice.device_id, "off"));
+
+                if (p) {
+                    p.then(function (data) {
+                        messageFactory.alert('Success', 'All devices were shut off');
+                    }, function (err) {
+                        messageFactory.alert('Failure', 'Failed to turn off all devices: ' + err);
+                    });
+                }
             }
         };
     }]);
