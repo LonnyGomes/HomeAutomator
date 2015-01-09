@@ -68,7 +68,7 @@
                     }
                 }).
                 error(function (data, status, headers, config) {
-                    defer.reject("FAILED to receive a response forrespond " + device_id);
+                    defer.reject("FAILED to receive a response for " + device_id);
                 });
 
             return defer.promise;
@@ -128,7 +128,24 @@
     });
 
     app.controller('ScenesController', [ '$scope', 'deviceFactory', function ($scope, deviceFactory) {
+        $scope.allOffClicked = function () {
+            var p = null;
+            angular.forEach(deviceFactory.getDevices(), function (d) {
+                if (p === null) {
+                    p = deviceFactory.updateDevice(d.home_id, d.device_id, "on");
+                } else {
+                    p = p.then(deviceFactory.updateDevice(d.home_id, d.device_id, "on"));
+                }
+            });
 
+            if (p) {
+                p.then(function (data) {
+                    alert("Promises are great!");
+                }, function (err) {
+                    alert("We failed some how:" + err);
+                });
+            }
+        };
     }]);
 
     app.controller('ConfigController', function ($scope) {
