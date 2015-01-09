@@ -137,7 +137,7 @@
         };
     });
 
-    app.controller('ScenesController', [ '$scope', '$q', 'deviceFactory', 'messageFactory', function ($scope, $q, deviceFactory, messageFactory) {
+    app.controller('ScenesController', [ '$scope', '$timeout', 'deviceFactory', 'messageFactory', function ($scope, $timeout, deviceFactory, messageFactory) {
         $scope.allOffClicked = function () {
             var p,
                 firstDevice,
@@ -152,7 +152,10 @@
                 //build a sequential chain of updateDevice calls
                 p = devices.reduce(function (promise, d) {
                     return promise.then(function () {
-                        return deviceFactory.updateDevice(d.home_id, d.device_id, "off");
+                        //stagger each call as to not flood the server
+                        $timeout(function () {
+                            return deviceFactory.updateDevice(d.home_id, d.device_id, "off");
+                        }, 100);
                     });
                 }, deviceFactory.updateDevice(firstDevice.home_id, firstDevice.device_id, "off"));
 
