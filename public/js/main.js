@@ -4,6 +4,7 @@
     var deviceModule = angular.module('DeviceModule', []),
         app = angular.module('App', ['ngRoute', 'DeviceModule']);
 
+    //
     //routes
     app.config([ '$routeProvider', function ($routeProvider) {
         $routeProvider
@@ -21,6 +22,7 @@
             });
     }]);
 
+    //
     // services
     deviceModule.factory('deviceFactory', [ '$http', '$q', function ($http, $q) {
         var devices = [
@@ -82,6 +84,18 @@
         };
     }]);
 
+
+    app.factory('messageFactory', [ function () {
+        return {
+            alert: function (title, msg) {
+                $('#status-modal .modal-header h4').text(title);
+                $('#status-modal-content').text(msg);
+                $('#status-modal').modal();
+            }
+        };
+    }]);
+
+    //
     // directives
     app.directive('lgTab', ['$location', function ($location) {
         return {
@@ -100,20 +114,17 @@
         };
     }]);
 
+    //
     // controllers
-    app.controller("DevicesController", function ($scope, $http, deviceFactory) {
+    app.controller("DevicesController", function ($scope, $http, deviceFactory, messageFactory) {
         $scope.devices = deviceFactory.getDevices();
 
         function updateDevice(d, state) {
             deviceFactory.updateDevice(d.home_id, d.device_id, state).
                 then(function (data) {
-                    $('#status-modal .modal-header h4').text('Success');
-                    $('#status-modal-content').text(d.device_name + " was turned " + state);
-                    $('#status-modal').modal();
+                    messageFactory.alert('Success', d.device_name + " was turned " + state);
                 }, function (err) {
-                    $('#status-modal .modal-header h4').text('Failed!');
-                    $('#status-modal-content').text("FAILED to update " + d.device_name);
-                    $('#status-modal').modal();
+                    messageFactory.alert('Failure', 'FAILED to update ' + d.device_name);
                 });
         }
 
@@ -124,25 +135,24 @@
         $scope.turnOffDevice = function (d) {
             updateDevice(d, "off");
         };
-
     });
 
-    app.controller('ScenesController', [ '$scope', 'deviceFactory', function ($scope, deviceFactory) {
+    app.controller('ScenesController', [ '$scope', 'deviceFactory', 'messageFactory', function ($scope, deviceFactory, messageFactory) {
         $scope.allOffClicked = function () {
             var p = null;
             angular.forEach(deviceFactory.getDevices(), function (d) {
                 if (p === null) {
-                    p = deviceFactory.updateDevice(d.home_id, d.device_id, "on");
+                    p = deviceFactory.updateDevice(d.home_id, d.device_id, "off");
                 } else {
-                    p = p.then(deviceFactory.updateDevice(d.home_id, d.device_id, "on"));
+                    p = p.then(deviceFactory.updateDevice(d.home_id, d.device_id, "off"));
                 }
             });
 
             if (p) {
                 p.then(function (data) {
-                    alert("Promises are great!");
+                    messageFactory.alert('Success', 'All devices were shut off');
                 }, function (err) {
-                    alert("We failed some how:" + err);
+                    messageFactory.alert('Failure', 'Failed to turn off all devices: ' + err);
                 });
             }
         };
