@@ -24,7 +24,7 @@
 
     //
     // services
-    deviceModule.factory('deviceFactory', [ '$http', '$q', function ($http, $q) {
+    deviceModule.factory('deviceFactory', [ '$http', '$q', '$timeout', function ($http, $q, $timeout) {
         var devices = [
             {
                 "home_id": "a",
@@ -57,30 +57,35 @@
                 "device_name": "Office"
             }
 
-        ], updateDevice = function (home_id, device_id, state) {
+        ], updateDeviceDelayed = function (home_id, device_id, state, delay) {
             var defer = $q.defer(),
                 url = "/api/" + state + "/" + home_id + "/" + device_id;
 
-            $http.get(url).
-                success(function (data, status, headers, config) {
-                    if (data.status === "success") {
-                        defer.resolve(data);
-                    } else {
-                        defer.reject("FAILED to turn " + device_id + " " + state);
-                    }
-                }).
-                error(function (data, status, headers, config) {
-                    defer.reject("FAILED to receive a response for " + device_id);
-                });
+            $timeout(function () {
+                $http.get(url).
+                    success(function (data, status, headers, config) {
+                        if (data.status === "success") {
+                            defer.resolve(data);
+                        } else {
+                            defer.reject("FAILED to turn " + device_id + " " + state);
+                        }
+                    }).
+                    error(function (data, status, headers, config) {
+                        defer.reject("FAILED to receive a response for " + device_id);
+                    });
+            }, delay);
 
             return defer.promise;
+        }, updateDevice = function (home_id, device_id, state) {
+            return updateDeviceDelayed(home_id, device_id, state, 0);
         };
 
         return {
             getDevices: function () {
                 return devices;
             },
-            updateDevice: updateDevice
+            updateDevice: updateDevice,
+            updateDeviceDelayed: updateDeviceDelayed
         };
     }]);
 
@@ -137,7 +142,7 @@
         };
     });
 
-    app.controller('ScenesController', [ '$scope', '$timeout', 'deviceFactory', 'messageFactory', function ($scope, $timeout, deviceFactory, messageFactory) {
+    app.controller('ScenesController', [ '$scope', 'deviceFactory', 'messageFactory', function ($scope, deviceFactory, messageFactory) {
         $scope.allOffClicked = function () {
             var p,
                 firstDevice,
@@ -152,10 +157,8 @@
                 //build a sequential chain of updateDevice calls
                 p = devices.reduce(function (promise, d) {
                     return promise.then(function () {
-                        //stagger each call as to not flood the server
-                        $timeout(function () {
-                            return deviceFactory.updateDevice(d.home_id, d.device_id, "off");
-                        }, 100);
+                        //invoke a delayed call as not to flood the server
+                        return deviceFactory.updateDeviceDelayed(d.home_id, d.device_id, "off", 1000);
                     });
                 }, deviceFactory.updateDevice(firstDevice.home_id, firstDevice.device_id, "off"));
 
