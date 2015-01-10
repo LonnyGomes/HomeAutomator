@@ -59,10 +59,11 @@
 
         ], updateDeviceDelayed = function (home_id, device_id, state, delay) {
             var defer = $q.defer(),
-                url = "/api/" + state + "/" + home_id + "/" + device_id;
+                url = "/api/" + state + "/" + home_id + "/" + device_id +
+                      "?callback=JSON_CALLBACK";
 
             $timeout(function () {
-                $http.get(url).
+                $http.jsonp(url).
                     success(function (data, status, headers, config) {
                         if (data.status === "success") {
                             defer.resolve(data);
