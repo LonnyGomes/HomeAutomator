@@ -2,7 +2,8 @@
 (function () {
     'use strict';
     var deviceModule = angular.module('DeviceModule', []),
-        app = angular.module('App', ['ngRoute', 'DeviceModule']);
+        configModule = angular.module('ConfigModule', []),
+        app = angular.module('App', ['ngRoute', 'DeviceModule', 'ConfigModule']);
 
     //
     //routes
@@ -24,40 +25,32 @@
 
     //
     // services
-    deviceModule.factory('deviceFactory', [ '$http', '$q', '$timeout', function ($http, $q, $timeout) {
-        var devices = [
-            {
-                "home_id": "a",
-                "device_id": "3",
-                "device_type": "appliance",
-                "device_name": "Kitchen"
-            },
-            {
-                "home_id": "a",
-                "device_id": "4",
-                "device_type": "appliance",
-                "device_name": "Christmas Lights"
-            },
-            {
-                "home_id": "a",
-                "device_id": "5",
-                "device_type": "appliance",
-                "device_name": "Fan"
-            },
-            {
-                "home_id": "a",
-                "device_id": "7",
-                "device_type": "dimmer",
-                "device_name": "Bedroom"
-            },
-            {
-                "home_id": "a",
-                "device_id": "8",
-                "device_type": "appliance",
-                "device_name": "Office"
-            }
+    configModule.factory('deviceConfig', [ '$http', '$q', function ($http, $q) {
+        var configDefer = $q.defer(),
+            devicesDefer = $q.defer();
 
-        ], updateDeviceDelayed = function (home_id, device_id, state, delay) {
+        $http.get('/config.json').
+            success(function (data, status, headers, config) {
+                configDefer.resolve(data);
+                devicesDefer.resolve(data.devices);
+            }).
+            error(function (data, status, headers, config) {
+                configDefer.reject('Failed to load config!');
+                devicesDefer.reject('Failed to load config!');
+            });
+
+        return {
+            getDevices: function () {
+                return devicesDefer.promise;
+            },
+            getConfig: function () {
+                return configDefer.promise;
+            }
+        };
+    }]);
+
+    deviceModule.factory('deviceFactory', [ '$http', '$q', '$timeout', 'deviceConfig', function ($http, $q, $timeout, deviceConfig) {
+        var updateDeviceDelayed = function (home_id, device_id, state, delay) {
             var defer = $q.defer(),
                 url = "/api/" + state + "/" + home_id + "/" + device_id +
                       "?callback=JSON_CALLBACK";
@@ -82,8 +75,17 @@
         };
 
         return {
-            getDevices: function () {
+            getDevicesTest: function () {
+                var devices = [];
+                deviceConfig.getDevices().then(function (d) {
+                    devices = d;
+                });
                 return devices;
+            },
+            getDevices: function () {
+                return deviceConfig.getDevices().then(function (devices) {
+                    return devices;
+                });
             },
             updateDevice: updateDevice,
             updateDeviceDelayed: updateDeviceDelayed
@@ -123,7 +125,10 @@
     //
     // controllers
     app.controller("DevicesController", function ($scope, $http, deviceFactory, messageFactory) {
-        $scope.devices = deviceFactory.getDevices();
+        $scope.devices = [];
+        deviceFactory.getDevices().then(function (d) {
+            $scope.devices = d;
+        });
 
         function updateDevice(d, state) {
             deviceFactory.updateDevice(d.home_id, d.device_id, state).
@@ -144,10 +149,10 @@
     });
 
     app.controller('ScenesController', [ '$scope', 'deviceFactory', 'messageFactory', function ($scope, deviceFactory, messageFactory) {
-        $scope.allOffClicked = function () {
+
+        var shutOffAllDevices = function (devices) {
             var p = null,
-                firstDevice,
-                devices = deviceFactory.getDevices();
+                firstDevice;
 
             //if any devices were returned lets get the first one
             //and loop through each other device sequentially
@@ -171,6 +176,13 @@
                     });
                 }
             }
+        };
+
+        $scope.allOffClicked = function () {
+            //retrieve all devices and then pass them in to get shut off
+            deviceFactory.getDevices().then(function (d) {
+                shutOffAllDevices(d);
+            });
         };
     }]);
 
