@@ -145,7 +145,7 @@
 
     app.controller('ScenesController', [ '$scope', 'deviceFactory', 'messageFactory', function ($scope, deviceFactory, messageFactory) {
         $scope.allOffClicked = function () {
-            var p,
+            var p = null,
                 firstDevice,
                 devices = deviceFactory.getDevices();
 
@@ -159,7 +159,7 @@
                 p = devices.reduce(function (promise, d) {
                     return promise.then(function () {
                         //invoke a delayed call as not to flood the server
-                        return deviceFactory.updateDeviceDelayed(d.home_id, d.device_id, "off", 1000);
+                        return deviceFactory.updateDeviceDelayed(d.home_id, d.device_id, "off", 2000);
                     });
                 }, deviceFactory.updateDevice(firstDevice.home_id, firstDevice.device_id, "off"));
 
