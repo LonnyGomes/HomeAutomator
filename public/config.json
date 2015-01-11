@@ -1,0 +1,37 @@
+{
+    "mochad_host": "localhost",
+    "mochad_port": 1099,
+    "mochad_type": "rf",
+    "devices": [
+        {
+            "home_id": "a",
+            "device_id": "3",
+            "device_type": "appliance",
+            "device_name": "Kitchen"
+        },
+        {
+            "home_id": "a",
+            "device_id": "4",
+            "device_type": "appliance",
+            "device_name": "Christmas Lights"
+        },
+        {
+            "home_id": "a",
+            "device_id": "5",
+            "device_type": "appliance",
+            "device_name": "Fan"
+        },
+        {
+            "home_id": "a",
+            "device_id": "7",
+            "device_type": "dimmer",
+            "device_name": "Bedroom"
+        },
+        {
+            "home_id": "a",
+            "device_id": "8",
+            "device_type": "appliance",
+            "device_name": "Office"
+        }
+    ]
+}

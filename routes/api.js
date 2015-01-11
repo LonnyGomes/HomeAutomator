@@ -14,9 +14,9 @@ function send(req, res, state) {
         if (err) {
             obj.status = 'fail';
             obj.message = err;
-            res.send(obj);
+            res.jsonp(obj);
         } else {
-            res.send(obj);
+            res.jsonp(obj);
         }
     });
     //res.send("respond:" + req.params.house);
