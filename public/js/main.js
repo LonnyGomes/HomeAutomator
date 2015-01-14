@@ -120,6 +120,13 @@
             alert: function (title, msg) {
                 $('#status-modal .modal-header h4').text(title);
                 $('#status-modal-content').text(msg);
+                $('#status-modal .modal-footer').show(0);
+                $('#status-modal').modal();
+            },
+            progress: function (msg) {
+                $('#status-modal .modal-header h4').text("Updating ...");
+                $('#status-modal-content').text(msg);
+                $('#status-modal .modal-footer').hide(0);
                 $('#status-modal').modal();
             }
         };
@@ -196,7 +203,7 @@
                     }, function (err) {
                         messageFactory.alert('Failure', 'Failed to turn off all devices: ' + err);
                     }, function (notify_data) {
-                        console.log('we got status for ' + notify_data.device_id);
+                        messageFactory.progress('we got status for ' + notify_data.device_id);
 //                        deviceConfig.getDevice(notify_data.home_id, notify_data.device_id).then(function (d) {
 //                        });
                     });

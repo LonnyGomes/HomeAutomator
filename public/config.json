@@ -1,5 +1,5 @@
 {
-    "mochad_host": "localhost",
+    "mochad_host": "192.168.1.8",
     "mochad_port": 1099,
     "mochad_type": "rf",
     "devices": [
