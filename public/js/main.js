@@ -40,6 +40,22 @@
             });
 
         return {
+            getDevice: function (home_id, device_id) {
+                return devicesDefer.then(function (devices) {
+                    var idx,
+                        curDevice,
+                        retVal = null;
+                    for (idx = 0; idx < devices.length; idx += 1) {
+                        curDevice = devices[idx];
+                        if (curDevice.home_id === home_id && curDevice.device_id === device_id) {
+                            retVal = curDevice;
+                            break;
+                        }
+                    }
+
+                    return retVal;
+                });
+            },
             getDevices: function () {
                 return devicesDefer.promise;
             },
@@ -59,6 +75,12 @@
                 $http.jsonp(url).
                     success(function (data, status, headers, config) {
                         if (data.status === "success") {
+                            //we want to notify as well as resolve
+                            defer.notify({
+                                "home_id": home_id,
+                                "device_id": device_id,
+                                "state": device_id
+                            });
                             defer.resolve(data);
                         } else {
                             defer.reject("FAILED to turn " + device_id + " " + state);
@@ -148,7 +170,7 @@
         };
     });
 
-    app.controller('ScenesController', [ '$scope', 'deviceFactory', 'messageFactory', function ($scope, deviceFactory, messageFactory) {
+    app.controller('ScenesController', [ '$scope', 'deviceFactory', 'deviceConfig', 'messageFactory', function ($scope, deviceFactory, deviceConfig, messageFactory) {
 
         var shutOffAllDevices = function (devices) {
             var p = null,
@@ -173,6 +195,10 @@
                         messageFactory.alert('Success', 'All devices were shut off');
                     }, function (err) {
                         messageFactory.alert('Failure', 'Failed to turn off all devices: ' + err);
+                    }, function (notify_data) {
+                        console.log('we got status for ' + notify_data.device_id);
+//                        deviceConfig.getDevice(notify_data.home_id, notify_data.device_id).then(function (d) {
+//                        });
                     });
                 }
             }
