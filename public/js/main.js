@@ -1,4 +1,4 @@
-/*global angular, $ */
+/*global angular, $ , FastClick */
 (function () {
     'use strict';
     var deviceModule = angular.module('DeviceModule', []),
@@ -236,4 +236,12 @@
     app.controller('ConfigController', function ($scope) {
 
     });
+
+    //initialization
+    (function () {
+        window.addEventListener('load', function () {
+            var fc = new FastClick(document.body);
+        }, false);
+    }());
+
 }());
