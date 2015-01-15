@@ -41,10 +41,12 @@
 
         return {
             getDevice: function (home_id, device_id) {
-                return devicesDefer.then(function (devices) {
+                var defer = $q.defer();
+                devicesDefer.promise.then(function (devices) {
                     var idx,
                         curDevice,
                         retVal = null;
+
                     for (idx = 0; idx < devices.length; idx += 1) {
                         curDevice = devices[idx];
                         if (curDevice.home_id === home_id && curDevice.device_id === device_id) {
@@ -53,8 +55,14 @@
                         }
                     }
 
-                    return retVal;
+                    if (retVal) {
+                        defer.resolve(retVal);
+                    } else {
+                        defer.reject('Failed to find device: ' + home_id + device_id);
+                    }
                 });
+
+                return defer.promise;
             },
             getDevices: function () {
                 return devicesDefer.promise;
@@ -179,8 +187,10 @@
 
     app.controller('ScenesController', [ '$scope', 'deviceFactory', 'deviceConfig', 'messageFactory', function ($scope, deviceFactory, deviceConfig, messageFactory) {
 
-        var shutOffAllDevices = function (devices) {
+        var shutOffAllDevices = function (orig_devices) {
             var p = null,
+                devices = orig_devices.slice(0),
+                isResolved = false,
                 firstDevice;
 
             //if any devices were returned lets get the first one
@@ -188,6 +198,7 @@
             if (devices.length > 0) {
                 firstDevice = devices.shift();
 
+                messageFactory.progress('Initializing ...');
                 //since updateDevice returns a promise, lets use reduce to
                 //build a sequential chain of updateDevice calls
                 p = devices.reduce(function (promise, d) {
@@ -199,13 +210,16 @@
 
                 if (p) {
                     p.then(function (data) {
+                        isResolved = true;
                         messageFactory.alert('Success', 'All devices were shut off');
                     }, function (err) {
                         messageFactory.alert('Failure', 'Failed to turn off all devices: ' + err);
                     }, function (notify_data) {
-                        messageFactory.progress('we got status for ' + notify_data.device_id);
-//                        deviceConfig.getDevice(notify_data.home_id, notify_data.device_id).then(function (d) {
-//                        });
+                        deviceConfig.getDevice(notify_data.home_id, notify_data.device_id).then(function (d) {
+                            if (!isResolved) {
+                                messageFactory.progress(d.device_name + ' was shut off ...');
+                            }
+                        });
                     });
                 }
             }
