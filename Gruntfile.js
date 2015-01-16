@@ -35,7 +35,7 @@ module.exports = function (grunt) {
         tasks: ['wiredep']
       },
       js: {
-        files: ['<%= config.app %>/scripts/{,*/}*.js'],
+        files: ['<%= config.app %>/js/{,*/}*.js'],
         tasks: ['jshint'],
         options: {
           livereload: true
@@ -129,8 +129,8 @@ module.exports = function (grunt) {
       },
       all: [
         'Gruntfile.js',
-        '<%= config.app %>/scripts/{,*/}*.js',
-        '!<%= config.app %>/scripts/vendor/*',
+        '<%= config.app %>/js/{,*/}*.js',
+        '!<%= config.app %>/js/vendor/*',
         'test/spec/{,*/}*.js'
       ]
     },
@@ -173,7 +173,7 @@ module.exports = function (grunt) {
       dist: {
         files: {
           src: [
-            '<%= config.dist %>/scripts/{,*/}*.js',
+            '<%= config.dist %>/js/{,*/}*.js',
             '<%= config.dist %>/css/{,*/}*.css',
             '<%= config.dist %>/images/{,*/}*.*',
             '<%= config.dist %>/css/fonts/{,*/}*.*',
@@ -319,8 +319,22 @@ module.exports = function (grunt) {
         'imagemin',
         'svgmin'
       ]
+    },
+    ngAnnotate: {
+      options: {
+        add: true
+      },
+      dev: {
+
+      },
+      dist: {
+        files: [{
+          expand: true,
+          src: ['.tmp/**/*.js']
+        }]
+      }
     }
-  });
+  }),
 
 
   grunt.registerTask('serve', 'start the server and preview your app, --allow-remote for remote access', function (target) {
@@ -368,6 +382,7 @@ module.exports = function (grunt) {
     'concurrent:dist',
     'autoprefixer',
     'concat',
+    'ngAnnotate:dist',
     'cssmin',
     'uglify',
     'copy:dist',
