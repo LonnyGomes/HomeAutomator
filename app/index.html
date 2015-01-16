@@ -11,8 +11,14 @@
   <link rel="shortcut icon" href="/favicon.ico">
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+  <!-- build:css(.) styles/vendor.css -->
+  <!-- bower:css -->
+  <!-- endbower -->
+  <!-- endbuild -->
+  <!-- build:css(.tmp) public/css/main.css -->
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+  <!-- endbuild -->
 </head>
 
 <body>
@@ -75,6 +81,17 @@
     </div>
   </div>
 
+
+  <!-- build:js(.) scripts/vendor.js -->
+  <!-- bower:js -->
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <!-- endbower -->
+  <!-- endbuild -->
+
+  <!-- build:js({app,.tmp}) public/js/main.js -->
   <script src="bower_components/jquery/dist/jquery.min.js"></script>
   <script src="bower_components/angular/angular.min.js"></script>
   <script src="bower_components/angular-route/angular-route.min.js"></script>
@@ -92,10 +109,11 @@
   <script src="bower_components/bootstrap/js/scrollspy.js"></script>
   <script src="bower_components/bootstrap/js/collapse.js"></script>
   <script src="bower_components/bootstrap/js/tab.js"></script>
-
-
-
   <script src="js/main.js"></script>
+  <!-- endbuild -->
+
+
+
 </body>
 
 </html>
