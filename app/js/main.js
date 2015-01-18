@@ -52,22 +52,26 @@
     deviceModule.factory('deviceFactory', [ '$http', '$q', '$timeout', 'deviceConfig', function ($http, $q, $timeout, deviceConfig) {
         var updateDeviceDelayed = function (home_id, device_id, state, delay) {
             var defer = $q.defer(),
-                url = "/api/" + state + "/" + home_id + "/" + device_id +
+                urlParams = "/api/" + state + "/" + home_id + "/" + device_id +
                       "?callback=JSON_CALLBACK";
 
-            $timeout(function () {
-                $http.jsonp(url).
-                    success(function (data, status, headers, config) {
-                        if (data.status === "success") {
-                            defer.resolve(data);
-                        } else {
-                            defer.reject("FAILED to turn " + device_id + " " + state);
-                        }
-                    }).
-                    error(function (data, status, headers, config) {
-                        defer.reject("FAILED to receive a response for " + device_id);
-                    });
-            }, delay);
+            deviceConfig.getConfig().then(function (config) {
+                $timeout(function () {
+                    //TODO: check that api_base_url is a valid URL
+                    var url = config.api_base_url + urlParams;
+                    $http.jsonp(url).
+                        success(function (data, status, headers, config) {
+                            if (data.status === "success") {
+                                defer.resolve(data);
+                            } else {
+                                defer.reject("FAILED to turn " + device_id + " " + state);
+                            }
+                        }).
+                        error(function (data, status, headers, config) {
+                            defer.reject("FAILED to receive a response for " + device_id);
+                        });
+                }, delay);
+            });
 
             return defer.promise;
         }, updateDevice = function (home_id, device_id, state) {
