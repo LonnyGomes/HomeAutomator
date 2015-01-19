@@ -1,4 +1,4 @@
-/*global angular, $ */
+/*global angular, $ , FastClick */
 (function () {
     'use strict';
     var deviceModule = angular.module('DeviceModule', []),
@@ -40,6 +40,30 @@
             });
 
         return {
+            getDevice: function (home_id, device_id) {
+                var defer = $q.defer();
+                devicesDefer.promise.then(function (devices) {
+                    var idx,
+                        curDevice,
+                        retVal = null;
+
+                    for (idx = 0; idx < devices.length; idx += 1) {
+                        curDevice = devices[idx];
+                        if (curDevice.home_id === home_id && curDevice.device_id === device_id) {
+                            retVal = curDevice;
+                            break;
+                        }
+                    }
+
+                    if (retVal) {
+                        defer.resolve(retVal);
+                    } else {
+                        defer.reject('Failed to find device: ' + home_id + device_id);
+                    }
+                });
+
+                return defer.promise;
+            },
             getDevices: function () {
                 return devicesDefer.promise;
             },
@@ -62,6 +86,12 @@
                     $http.jsonp(url).
                         success(function (data, status, headers, config) {
                             if (data.status === "success") {
+                                //we want to notify as well as resolve
+                                defer.notify({
+                                    "home_id": home_id,
+                                    "device_id": device_id,
+                                    "state": device_id
+                                });
                                 defer.resolve(data);
                             } else {
                                 defer.reject("FAILED to turn " + device_id + " " + state);
@@ -102,6 +132,13 @@
             alert: function (title, msg) {
                 $('#status-modal .modal-header h4').text(title);
                 $('#status-modal-content').text(msg);
+                $('#status-modal .modal-footer').show(0);
+                $('#status-modal').modal();
+            },
+            progress: function (msg) {
+                $('#status-modal .modal-header h4').text("Updating ...");
+                $('#status-modal-content').text(msg);
+                $('#status-modal .modal-footer').hide(0);
                 $('#status-modal').modal();
             }
         };
@@ -152,10 +189,12 @@
         };
     });
 
-    app.controller('ScenesController', [ '$scope', 'deviceFactory', 'messageFactory', function ($scope, deviceFactory, messageFactory) {
+    app.controller('ScenesController', [ '$scope', 'deviceFactory', 'deviceConfig', 'messageFactory', function ($scope, deviceFactory, deviceConfig, messageFactory) {
 
-        var shutOffAllDevices = function (devices) {
+        var shutOffAllDevices = function (orig_devices) {
             var p = null,
+                devices = orig_devices.slice(0),
+                isResolved = false,
                 firstDevice;
 
             //if any devices were returned lets get the first one
@@ -163,6 +202,7 @@
             if (devices.length > 0) {
                 firstDevice = devices.shift();
 
+                messageFactory.progress('Initializing ...');
                 //since updateDevice returns a promise, lets use reduce to
                 //build a sequential chain of updateDevice calls
                 p = devices.reduce(function (promise, d) {
@@ -174,9 +214,16 @@
 
                 if (p) {
                     p.then(function (data) {
+                        isResolved = true;
                         messageFactory.alert('Success', 'All devices were shut off');
                     }, function (err) {
                         messageFactory.alert('Failure', 'Failed to turn off all devices: ' + err);
+                    }, function (notify_data) {
+                        deviceConfig.getDevice(notify_data.home_id, notify_data.device_id).then(function (d) {
+                            if (!isResolved) {
+                                messageFactory.progress(d.device_name + ' was shut off ...');
+                            }
+                        });
                     });
                 }
             }
@@ -193,4 +240,12 @@
     app.controller('ConfigController', function ($scope) {
 
     });
+
+    //initialization
+    (function () {
+        window.addEventListener('load', function () {
+            var fc = new FastClick(document.body);
+        }, false);
+    }());
+
 }());
