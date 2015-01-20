@@ -246,6 +246,13 @@
         window.addEventListener('load', function () {
             var fc = new FastClick(document.body);
         }, false);
+
+        //when in "mobile" mode, collapse bootstrap menu when clicked
+        $(document).on('click', '.navbar-collapse.in', function (e) {
+            if ($(e.target).is('a')) {
+                $(this).collapse('hide');
+            }
+        });
     }());
 
 }());
