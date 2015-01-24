@@ -333,6 +333,13 @@ module.exports = function (grunt) {
           src: ['.tmp/**/*.js']
         }]
       }
+    },
+    nodewebkit: {
+        options: {
+            platforms: ['win', 'osx'],
+            buildDir: './webkitbuilds'
+        },
+        src: ['./public/**/*'] //node-webkit app
     }
   }),
 
