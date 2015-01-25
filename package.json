@@ -4,8 +4,10 @@
   "private": true,
   "main": "public/index.html",
   "window": {
-    "toolbar": false,
-    "frame": false
+    "toolbar": true,
+    "frame": true,
+    "width": 500,
+    "height": 768
   },
   "scripts": {
     "start": "./bin/www"
