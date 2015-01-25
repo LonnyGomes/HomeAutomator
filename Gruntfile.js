@@ -8,7 +8,6 @@
 // 'test/spec/{,*/}*.js'
 // If you want to recursively match all subfolders, use:
 // 'test/spec/**/*.js'
-
 module.exports = function (grunt) {
     'use strict';
 
@@ -20,9 +19,11 @@ module.exports = function (grunt) {
 
     // Configurable paths
     var config = {
-        app: 'app',
-        dist: 'public'
-    };
+            app: 'app',
+            dist: 'public'
+        },
+        fs = require('fs'),
+        path = require('path');
 
     // Define the configuration for all the tasks
     grunt.initConfig({
@@ -343,9 +344,36 @@ module.exports = function (grunt) {
                 buildDir: './webkitbuilds'
             },
             src: ['./public/**/*'] //node-webkit app
+        },
+        nodewebkitCopy: {
+            dist: {
+                main: 'index.html',
+                window: {
+                    toolbar: false,
+                    width: 500,
+                    height: 768
+                },
+                dest: '<%= config.dist %>'
+            }
         }
     });
 
+    grunt.registerMultiTask('nodewebkitCopy', 'copies package.json into final destination with updated params', function () {
+        var options = this.options({}),
+            inputFile = fs.readFileSync('package.json'),
+            json = JSON.parse(inputFile),
+            outputFilePath = path.resolve(this.data.dest, 'package.json');
+
+        json.main = this.data.main;
+        json.window = this.data.window;
+        fs.writeFileSync(outputFilePath, JSON.stringify(json, null, 4));
+    });
+
+    grunt.registerTask('build-nw', [
+        'build',
+        'nodewebkitCopy',
+        'nodewebkit'
+    ]);
 
     grunt.registerTask('serve', 'start the server and preview your app, --allow-remote for remote access', function (target) {
         if (grunt.option('allow-remote')) {
