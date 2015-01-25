@@ -29,7 +29,7 @@
         var configDefer = $q.defer(),
             devicesDefer = $q.defer();
 
-        $http.get('/config.json').
+        $http.get('config.json').
             success(function (data, status, headers, config) {
                 configDefer.resolve(data);
                 devicesDefer.resolve(data.devices);
