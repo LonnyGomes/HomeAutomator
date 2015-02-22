@@ -24,4 +24,8 @@ body {
   .navbar-header {
     padding-top: 20px;
   }
+  a.navbar-brand {
+    width: 85%;
+    text-align: center;
+  }
 }
