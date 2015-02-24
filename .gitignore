@@ -17,3 +17,6 @@ phonegap/platforms/ios/www/
 phonegap/www
 console.log
 
+
+cache
+webkitbuilds
