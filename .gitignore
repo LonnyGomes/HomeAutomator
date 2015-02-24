@@ -14,4 +14,6 @@ public
 project.xcworkspace/
 xcuserdata/
 phonegap/platforms/ios/www/
+phonegap/www
+console.log
 
