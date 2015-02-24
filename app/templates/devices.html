@@ -1,13 +1,15 @@
-<h3 class="text-muted">Devices</h3>
-<div class="row device" ng-repeat="device in devices">
-  <div class="col-sm-2">
-    <h4>{{ device.device_name }}</h4>
-  </div>
+<h3>Devices</h3>
+<div class="devices-container">
+  <div class="row device" ng-repeat="device in devices">
+    <div class="col-sm-12 col-md-7">
+      <h4>{{ device.device_name }}</h4>
+    </div>
 
-  <div class="col-sm-10">
-    <div class="buttons-container">
-      <button data-button-type="on" class="button-on btn btn-success" ng-click="turnOnDevice(device)">ON</button>
-      <button data-button-type="off" class="button-off btn btn-danger" ng-click="turnOffDevice(device)">OFF</button>
+    <div class="col-sm-12 col-md-5">
+      <div class="buttons-container text-right">
+        <button data-button-type="on" class="button-on btn btn-success" ng-click="turnOnDevice(device)">ON</button>
+        <button data-button-type="off" class="button-off btn btn-danger" ng-click="turnOffDevice(device)">OFF</button>
+      </div>
     </div>
   </div>
 </div>

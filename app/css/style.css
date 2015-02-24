@@ -2,6 +2,7 @@ body {
   padding: 50px;
   padding-top: 70px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #bfcfd9;
 }
 
 .buttons-container {
@@ -13,11 +14,49 @@ body {
     width: 70px;
 }
 
+.devices-container {
+  width: 100%;
+  margin: 0 auto;
+}
+
 .device {
   padding: 4px 8px;
   margin-bottom: 10px;
-  background-color: hsla(0, 0%, 92%, 0.72);
   border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.63);
+  max-width: 512px;
+}
+
+.navbar {
+  border: none;
+}
+
+.navbar-default {
+  background-color: #4d4c73;
+}
+
+.navbar-default .navbar-brand {
+  color: #fff;
+}
+
+.btn-success {
+  background-color: #4d4c73;
+  border-color: #3a3957;
+}
+
+.btn-success:hover, .btn-success:active {
+  background-color: #3c3c5c;
+  border-color: #29283e;
+}
+
+.btn-danger {
+  background-color: #6d70a6;
+  border-color: #656796;
+}
+
+.btn-danger:hover, .btn-danger:active {
+  background-color: #5e608d;
+  border-color: #4a4b6d;
 }
 
 @media screen and (max-width: 767px) {
@@ -25,7 +64,15 @@ body {
     padding-top: 20px;
   }
   a.navbar-brand {
-    width: 85%;
+    display: inline-block;
+    position: absolute;
+    width: 100%;
     text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+  }
+
+  .navbar-toggle {
+    z-index: 10;
   }
 }
