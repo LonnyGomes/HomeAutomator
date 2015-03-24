@@ -59,6 +59,13 @@ body {
   border-color: #4a4b6d;
 }
 
+.button-on {
+  border-radius: 4px 0px 0px 4px;
+}
+
+.button-off {
+  border-radius: 0px 4px 4px 0px;
+}
 /* bootstrap overrides */
 .modal-dialog {
     margin-top: 100px;
