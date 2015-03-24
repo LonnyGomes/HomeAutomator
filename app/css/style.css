@@ -59,6 +59,10 @@ body {
   border-color: #4a4b6d;
 }
 
+.btn.button-switch  {
+  padding: 4px;
+}
+
 .button-on {
   border-radius: 4px 0px 0px 4px;
 }
