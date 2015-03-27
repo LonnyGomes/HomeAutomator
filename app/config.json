@@ -1,5 +1,5 @@
 {
-    "api_base_url": "http://localhost:3000",
+    "api_base_url": "http://192.168.1.8:3000",
     "mochad_host": "localhost",
     "mochad_port": 1099,
     "mochad_type": "rf",

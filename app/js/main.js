@@ -3,7 +3,13 @@
     'use strict';
     var deviceModule = angular.module('DeviceModule', []),
         configModule = angular.module('ConfigModule', []),
-        app = angular.module('App', ['ngRoute', 'DeviceModule', 'ConfigModule']);
+        networkModule = angular.module('NetworkModule', ['ngCordova.plugins.network']),
+        app = angular.module('App', [
+            'ngRoute',
+            'DeviceModule',
+            'ConfigModule',
+            'NetworkModule'
+        ]);
 
     //
     //routes
@@ -25,6 +31,23 @@
 
     //
     // services
+    networkModule.factory('availability', [ function ($cordovaNetwork) {
+        return {
+            isPhoneGap: function () {
+                return ((window.cordova || window.PhoneGap || window.phonegap)
+                    && /^file:\/{3}/i.test(window.location.href)
+                    && /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent)) ? true : false;
+            },
+            getNetwork: function () {
+                if ($cordovaNetwork) {
+                    return $cordovaNetwork.getNetwork();
+                } else {
+                    return false;
+                }
+            }
+        };
+    }]);
+
     configModule.factory('deviceConfig', [ '$http', '$q', function ($http, $q) {
         var configDefer = $q.defer(),
             devicesDefer = $q.defer();
@@ -165,8 +188,9 @@
 
     //
     // controllers
-    app.controller("DevicesController", function ($scope, $http, deviceFactory, messageFactory) {
+    app.controller("DevicesController", function ($scope, $http, deviceFactory, messageFactory, availability) {
         $scope.devices = [];
+        alert("Is phonegap:" + availability.getNetwork());
         deviceFactory.getDevices().then(function (d) {
             $scope.devices = d;
         });
