@@ -20,7 +20,8 @@ module.exports = function (grunt) {
     // Configurable paths
     var config = {
             app: 'app',
-            dist: 'public'
+            dist: 'public',
+            phonegap: 'phonegap/www'
         },
         fs = require('fs'),
         path = require('path');
@@ -117,7 +118,8 @@ module.exports = function (grunt) {
                     src: [
                         '.tmp',
                         '<%= config.dist %>/*',
-                        '!<%= config.dist %>/.git*'
+                        '!<%= config.dist %>/.git*',
+                        '!<%= config.phonegap %>/*'
                     ]
                 }]
             },
@@ -301,6 +303,13 @@ module.exports = function (grunt) {
                     }
                 ]
             },
+            phonegap: {
+                files: [{
+                    expand: true,
+                    src: '<%= config.dist %>/*',
+                    dest: '<%= config.phonegap %>/'
+                }]
+            },
             styles: {
                 expand: true,
                 dot: true,
@@ -427,6 +436,11 @@ module.exports = function (grunt) {
         'rev',
         'usemin',
         'htmlmin'
+    ]);
+
+    grunt.registerTask('phonegap', [
+        'build',
+        'copy:phonegap'
     ]);
 
     grunt.registerTask('default', [
