@@ -91,6 +91,7 @@ module.exports = function (grunt) {
             test: {
                 options: {
                     open: false,
+                    hostname: 'localhost',
                     port: 9001,
                     middleware: function (connect) {
                         return [
@@ -325,7 +326,7 @@ module.exports = function (grunt) {
                 'copy:styles'
             ],
             test: [
-                'copy:css'
+                'copy:styles'
             ],
             dist: [
                 'copy:styles',
