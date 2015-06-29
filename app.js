@@ -21,6 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
 
 app.use('/', routes);
+app.get('/api/list', api.list);
 app.get('/api/on/:house/:device', api.on);
 app.get('/api/off/:house/:device', api.off);
 

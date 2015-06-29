@@ -23,6 +23,11 @@ function send(req, res, state) {
     //res.send("respond:" + req.params.house);
 }
 
+function list(req, res) {
+    "use strict";
+    res.jsonp(config.devices);
+}
+
 exports.on = function (req, res) {
     "use strict";
     send(req, res, "on");
@@ -31,4 +36,10 @@ exports.on = function (req, res) {
 exports.off = function (req, res) {
     "use strict";
     send(req, res, "off");
+};
+
+exports.list = function (req, res) {
+    "use strict";
+
+    list(req, res);
 };
