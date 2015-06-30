@@ -1,6 +1,10 @@
 /*global require, exports */
 var config = require("../public/config.json"),
-    mochad = require("../lib/mochad")(config);
+    mochad = require("../lib/mochad")(config),
+    Parse = require('node-parse-api').Parse,
+    parseId = config.parse_app_id,
+    parseKey = config.parse_api_key,
+    parseApp = new Parse(parseId, parseKey);
 
 function send(req, res, state) {
     "use strict";
