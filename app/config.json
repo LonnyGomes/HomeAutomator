@@ -3,8 +3,8 @@
     "mochad_host": "localhost",
     "mochad_port": 1099,
     "mochad_type": "rf",
-    "parse_app_id": "",
-    "parse_api_key": "",
+    "parse_app_id": "OvwA3I69wCyFMLGFH4ZcZjkVOZCZOGa75YX2YQIj",
+    "parse_api_key": "lYhmx2mnlhWyUkCOkS7bDZbCuj2bLuQKKTata83L",
     "devices": [
         {
             "home_id": "a",
