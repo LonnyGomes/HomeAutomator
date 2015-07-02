@@ -9,6 +9,20 @@ var config = require("../public/config.json"),
         api_key: parseKey
     });
 
+function parseLog(actionType, msg) {
+    "use strict";
+
+    // add a Foo object, { foo: 'bar' }
+    parseApp.insert('Log', { action: actionType, message: msg }, function (err, response) {
+        if (err) {
+            console.error(err);
+        } else {
+            console.log(response);
+        }
+    });
+}
+
+
 function send(req, res, state) {
     "use strict";
 
@@ -16,34 +30,25 @@ function send(req, res, state) {
         deviceCode = req.params.device,
         sendFunc = (state === "on" ? mochad.sendOn : mochad.sendOff);
 
-    sendFunc(houseCode, deviceCode, function (err, data) {
+    sendFunc(houseCode, deviceCode, function (err) {
         var obj = {status: 'success'};
 
         if (err) {
-            log('error', err);
+            parseLog('error', err);
             obj.status = 'fail';
             obj.message = err;
             res.jsonp(obj);
         } else {
-            log(state, 'Turned ' + state + ' ' + houseCode + deviceCode);
+            parseLog(state, 'Turned ' + state + ' ' + houseCode + deviceCode);
             res.jsonp(obj);
         }
     });
     //res.send("respond:" + req.params.house);
 }
 
-function log(actionType, msg) {
-    "use strict";
-
-    // add a Foo object, { foo: 'bar' }
-    parseApp.insert('Log', { action: actionType, message: msg }, function (err, response) {
-        console.log(response);
-    });
-}
-
 function list(req, res) {
     "use strict";
-    log("list", 'Listing all devices');
+    parseLog("list", 'Listing all devices');
     res.jsonp(config.devices);
 }
 
